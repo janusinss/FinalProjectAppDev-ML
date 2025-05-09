@@ -1,0 +1,176 @@
+{% extends "base_generic.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login - Board Game Predictor{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <style>
+    .login-container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .login-card {
+      border: none;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .login-header {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+    }
+    
+    .login-header h2 {
+      font-weight: 700;
+      margin-bottom: 0;
+      font-size: 2rem;
+    }
+    
+    .login-header .header-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.9;
+    }
+    
+    .login-body {
+      padding: 2rem;
+      background: white;
+    }
+    
+    .login-footer {
+      background-color: #f8f9fa;
+      border-top: none;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .login-footer p {
+      margin-bottom: 0;
+      color: #6c757d;
+    }
+    
+    .login-footer a {
+      color: #3498db;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .login-footer a:hover {
+      color: #2980b9;
+      text-decoration: underline;
+    }
+    
+    .btn-login {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      border-radius: 5px;
+      width: 100%;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+      background: linear-gradient(135deg, #2980b9, #3498db);
+    }
+    
+    .alert {
+      border-radius: 5px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      border: none;
+    }
+    
+    .alert-danger {
+      background-color: #fff5f5;
+      color: #e74c3c;
+      border-left: 4px solid #e74c3c;
+    }
+    
+    .alert-warning {
+      background-color: #fffbeb;
+      color: #f39c12;
+      border-left: 4px solid #f39c12;
+    }
+    
+    .alert-info {
+      background-color: #ebf8ff;
+      color: #3498db;
+      border-left: 4px solid #3498db;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container my-5">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="header-icon">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <h2>Welcome User <i class="fas fa-dice-d20 mr-2"></i></h2>
+    </div>
+    
+    <div class="login-body">
+      {% if form.errors and not form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          Your username and password didn't match. Please try again.
+        </div>
+      {% endif %}
+      
+      {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            {{ error }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% if next %}
+        {% if user.is_authenticated %}
+          <div class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            Your account doesn't have access to this page. To proceed,
+            please login with an account that has access.
+          </div>
+        {% else %}
+          <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle mr-2"></i>
+            Please login to see this page.
+          </div>
+        {% endif %}
+      {% endif %}
+
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="hidden" name="next" value="{{ next }}">
+        <div class="mt-4">
+          <button type="submit" class="btn btn-login">
+            <i class="fas fa-sign-in-alt mr-2"></i>Login
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <div class="login-footer">
+      <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

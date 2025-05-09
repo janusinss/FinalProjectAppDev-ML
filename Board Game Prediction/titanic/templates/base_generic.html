@@ -1,0 +1,341 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Titanic ML Predictor{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <script src="https://kit.fontawesome.com/47101d2035.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+        
+        body {
+            font-family: 'Raleway', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+        
+        h1, h2, h3, h4, h5, h6, .navbar-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+        
+        /* Navbar styling */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 0.8rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            margin: 0 3px;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .navbar-dark .navbar-nav .active > .nav-link {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-weight: 500;
+        }
+        
+        /* Button styling */
+        .btn {
+            border-radius: 4px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            /* transition: all 0.3s ease; */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-register {
+            background: linear-gradient(135deg, var(--success-color), #27ae60);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+        }
+        
+        .btn-register:hover {
+            background: linear-gradient(135deg, #27ae60, var(--success-color));
+        }
+        
+        /* Content area styling */
+        .content-wrapper {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--accent-color);
+        }
+        
+        .content-wrapper:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Dropdown styling */
+        .dropdown-menu {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .dropdown-item {
+            padding: 0.7rem 1.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+        
+        .dropdown-divider {
+            margin: 0.5rem 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Footer styling */
+        footer {
+            background-color: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.5rem 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        footer p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        /* Animation classes */
+        .animate-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .animate-hover:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .content-wrapper {
+                padding: 1.5rem;
+            }
+            
+            body {
+                padding-bottom: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Creative Navbar with Gradient Background -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center animate__animated animate__fadeIn" href="{% url 'landing_page' %}">
+                <i class="fas fa-dice-d20 mr-2"></i>
+                <span>Board Game Predictor</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item {% if request.resolver_match.url_name == 'landing_page' %}active{% endif %}">
+                        <a class="nav-link animate-hover" href="{% url 'landing_page' %}">
+                            <i class="fas fa-home mr-1"></i> Home
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item {% if request.resolver_match.url_name == 'prediction_tool' %}active{% endif %}">
+                        <a class="nav-link animate-hover" href="{% url 'prediction_tool' %}">
+                            <i class="fas fa-chart-line mr-1"></i> Predict Tool
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarUserDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user-circle mr-1"></i> Hello, {{ user.username }}!
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarUserDropdown">
+                            <div class="dropdown-header text-center">
+                                <i class="fas fa-user-circle fa-2x mb-2"></i>
+                                <p class="mb-0 font-weight-bold">{{ user.username }}</p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'landing_page' %}">
+                                <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                            </a>
+                            <a class="dropdown-item" href="{% url 'prediction_tool' %}">
+                                <i class="fas fa-chart-line mr-2"></i> Prediction Tool
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <form class="form-inline" id="logout-form-nav" method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item btn-logout-nav" style="width:100%; text-align:left;">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="nav-item {% if request.resolver_match.url_name == 'login' %}active{% endif %}">
+                        <a class="nav-link animate-hover" href="{% url 'login' %}">
+                            <i class="fas fa-sign-in-alt mr-1"></i> Login
+                        </a>
+                    </li>
+                    <li class="nav-item {% if request.resolver_match.url_name == 'register' %}active{% endif %}">
+                        <a class="nav-link btn btn-register animate__animated animate__pulse animate__infinite animate__slower" href="{% url 'register' %}">
+                            <i class="fas fa-user-plus mr-1"></i> Register
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content with Card Design -->
+    <main class="container py-5">
+        <div class="content-wrapper animate__animated animate__fadeIn">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- Modern Footer -->
+    <footer class="py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center text-md-left">
+                    <p class="text-muted mb-2 mb-md-0">
+                        <i class="fas fa-dice mr-1"></i> &copy; {% now "Y" %} Board Game Predictor
+                    </p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="d-flex justify-content-center">
+                        <a href="#" class="text-muted mx-2 animate-hover"><i class="fab fa-github fa-lg"></i></a>
+                        <a href="#" class="text-muted mx-2 animate-hover"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-muted mx-2 animate-hover"><i class="fab fa-linkedin fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center text-md-right">
+                    <p class="text-muted">
+                        <i class="fas fa-brain mr-1"></i> Machine Learning Model
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <script>
+        // Add smooth scrolling
+        $(document).ready(function() {
+            // Initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+            
+            // Add smooth scrolling to all links
+            $("a").on('click', function(event) {
+                if (this.hash !== "") {
+                    event.preventDefault();
+                    var hash = this.hash;
+                    $('html, body').animate({
+                        scrollTop: $(hash).offset().top
+                    }, 800, function(){
+                        window.location.hash = hash;
+                    });
+                }
+            });
+            
+            // Add active class to navbar on scroll
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 50) {
+                    $('.navbar').addClass('shadow');
+                } else {
+                    $('.navbar').removeClass('shadow');
+                }
+            });
+        });
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

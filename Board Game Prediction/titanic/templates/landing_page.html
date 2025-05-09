@@ -1,0 +1,471 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+    {% if is_dashboard %}Dashboard{% else %}Welcome - Board Game Predictor{% endif %}
+{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <style>
+    /* Welcome page styling */
+    .hero-section {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      border-radius: 10px;
+      padding: 3rem 2rem;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .hero-section:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: url('https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+      background-size: cover;
+      opacity: 0.15;
+      z-index: 0;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .hero-subtitle {
+      font-size: 1.5rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+    
+    .hero-buttons .btn {
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border-radius: 5px;
+      box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+    
+    .hero-buttons .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    }
+    
+    .btn-login {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      border: none;
+      color: white;
+    }
+    
+    .btn-register {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      border: none;
+      color: white;
+    }
+    
+    .feature-card {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      height: 100%;
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      color: #3498db;
+    }
+    
+    .feature-title {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #2c3e50;
+    }
+    
+    .feature-list {
+      padding-left: 1.5rem;
+    }
+    
+    .feature-list li {
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+    
+    .feature-list li:before {
+      content: "\f00c";
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      position: absolute;
+      left: -1.5rem;
+      color: #2ecc71;
+    }
+    
+    /* Dashboard styling */
+    .dashboard-header {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dashboard-title {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 2.2rem;
+    }
+    
+    .dashboard-subtitle {
+      opacity: 0.9;
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+    
+    .dashboard-card {
+      border: none;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    .dashboard-card:hover {
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dashboard-card .card-header {
+      background: linear-gradient(135deg, #f5f7fa, #e4e7eb);
+      border-bottom: none;
+      padding: 1.25rem 1.5rem;
+    }
+    
+    .dashboard-card .card-header h3, 
+    .dashboard-card .card-header h4 {
+      margin-bottom: 0;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    .dashboard-card .card-body {
+      padding: 1.5rem;
+    }
+    
+    .model-performance-card {
+      border: none;
+      border-radius: 8px;
+      overflow: hidden;
+      height: 100%;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .model-performance-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .model-performance-card .card-title {
+      font-weight: 600;
+      color: #2c3e50;
+      border-bottom: 2px solid #f1f1f1;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    
+    .btn-prediction-tool {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-weight: 600;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    
+    .btn-prediction-tool:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+      background: linear-gradient(135deg, #2980b9, #3498db);
+      color: white;
+    }
+    
+    .table-responsive {
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    .table {
+      margin-bottom: 0;
+    }
+    
+    .table thead th {
+      background-color: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    .img-fluid {
+      border-radius: 5px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated and is_dashboard %}
+        <div class="dashboard-header">
+            <h1 class="dashboard-title"><i class="fas fa-chart-line mr-2"></i>Board Game Analytics Dashboard</h1>
+            <p class="dashboard-subtitle">Explore insights and model performance metrics</p>
+        </div>
+
+        {% if dashboard_error %}
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-circle mr-2"></i>{{ dashboard_error }}
+            </div>
+        {% else %}
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-database mr-2"></i>Dataset Statistics</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-light mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-table mr-2"></i>Basic Information</h5>
+                                    <p><strong>Total Records:</strong> {{ num_records }}</p>
+                                    <p><strong>Total Features (Original CSV):</strong> {{ num_features }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-calculator mr-2"></i>Feature Summary</h5>
+                                    <div class="table-responsive">
+                                        {% if feature_summary_html %}
+                                            {{ feature_summary_html|safe }}
+                                        {% else %}
+                                            <p>Summary not available.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if target_distribution_chart %}
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-bar mr-2"></i>Target Variable Distribution (Rating Average)</h3>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ target_distribution_chart }}" alt="Target Distribution Chart" class="img-fluid">
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-tachometer-alt mr-2"></i>Model Performance</h3>
+                </div>
+                <div class="card-body">
+                    {% if model_performance %}
+                        <div class="row">
+                        {% for perf in model_performance %}
+                            <div class="col-md-6 mb-3">
+                                <div class="model-performance-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <i class="fas fa-robot mr-2"></i>{{ perf.model_name }}
+                                        </h5>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2">
+                                                <i class="fas fa-chart-line text-primary mr-2"></i>
+                                                <strong>Mean Absolute Error (MAE):</strong> 
+                                                <span class="badge badge-light">{{ perf.mae }}</span>
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-chart-area text-info mr-2"></i>
+                                                <strong>Root Mean Squared Error (RMSE):</strong> 
+                                                <span class="badge badge-light">{{ perf.rmse }}</span>
+                                            </li>
+                                            <li>
+                                                <i class="fas fa-check-circle text-success mr-2"></i>
+                                                <strong>R² Score:</strong> 
+                                                <span class="badge badge-light">{{ perf.r_squared }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle mr-2"></i>Model performance data not available.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-puzzle-piece mr-2"></i>Top Feature Importances</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                    {% if feature_importance_charts %}
+                        {% for fi_chart_info in feature_importance_charts %}
+                        <div class="col-md-6 mb-3">
+                             <div class="card bg-light">
+                                 <div class="card-body">
+                                     <h5 class="card-title">{{ fi_chart_info.title }}</h5>
+                                     {% if '<p>' in fi_chart_info.chart_data %}
+                                        {{ fi_chart_info.chart_data|safe }}
+                                     {% else %}
+                                        <img src="{{ fi_chart_info.chart_data }}" alt="Feature Importance for {{ fi_chart_info.title }}" class="img-fluid">
+                                     {% endif %}
+                                 </div>
+                             </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info col-12">
+                            <i class="fas fa-info-circle mr-2"></i>Feature importance charts not available.
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            {% if correlation_heatmap_chart %}
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-th mr-2"></i>Correlation Heatmap</h3>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ correlation_heatmap_chart }}" alt="Correlation Heatmap" class="img-fluid">
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="text-center mt-4 mb-5">
+                <a href="{% url 'prediction_tool' %}" class="btn btn-prediction-tool">
+                    <i class="fas fa-chart-line mr-2"></i>Go to Prediction Tool
+                </a>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <div class="hero-section">
+            <div class="hero-content text-center">
+                <h1 class="hero-title">
+                    <i class="fas fa-dice-d20 mr-2"></i>Board Game Predictor
+                </h1>
+                <p class="hero-subtitle">
+                    Discover potential ratings for board games using our advanced machine learning models
+                </p>
+                <div class="hero-buttons">
+                    <a class="btn btn-login mr-3" href="{% url 'login' %}" role="button">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </a>
+                    <a class="btn btn-register" href="{% url 'register' %}" role="button">
+                        <i class="fas fa-user-plus mr-2"></i>Register
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Accurate Predictions</h3>
+                    <p>Our machine learning models analyze multiple factors to predict board game ratings with high accuracy.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="feature-title">Secure & Private</h3>
+                    <p>Your data is protected with secure user authentication and privacy-focused design.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Interactive Dashboard</h3>
+                    <p>Explore model performance, feature importance, and dataset statistics through our intuitive dashboard.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-md-6 mb-4">
+                <div class="feature-card">
+                    <h3 class="feature-title"><i class="fas fa-list-ul mr-2"></i>Key Features</h3>
+                    <ul class="feature-list">
+                        <li>Accurate predictions based on various game metrics</li>
+                        <li>Multiple machine learning models for comparison</li>
+                        <li>User-friendly interface with intuitive design</li>
+                        <li>Secure user authentication system</li>
+                        <li>Detailed analytics dashboard with visualizations</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="feature-card">
+                    <h3 class="feature-title"><i class="fas fa-rocket mr-2"></i>Get Started</h3>
+                    <p>Join our community today to start making predictions and explore the fascinating world of board game analytics.</p>
+                    <p>Our platform helps game designers, publishers, and enthusiasts understand what factors contribute to a game's success.</p>
+                    <div class="text-center mt-4">
+                        <a href="{% url 'register' %}" class="btn btn-register">
+                            <i class="fas fa-user-plus mr-2"></i>Create Free Account
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
